@@ -1,0 +1,1 @@
+Java permite escrever códigos mais eficientes, pois, podemos fragmentar processos no código deixando a execução mais leve. Lembrando das aulas de SO, processos são extremamente mais pesados do que Threads, portanto, usar Threads muitas vezes se faz necessário para deixar o código mais fluído e leve. 
