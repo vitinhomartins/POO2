@@ -1,0 +1,1 @@
+Quando criarmos uma thread é necessário entender quando estender Thread ou implementar Runnable. Quando uma thread necessitará também herdar alguma outra classe, desta forma, apenas implementar será possível, pois, Java não permite herança múltipla. Entretanto, se não houver herança, pode ser estendido com Thread. 
