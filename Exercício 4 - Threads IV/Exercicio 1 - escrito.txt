@@ -1,0 +1,1 @@
+A saída do programa ficou bem bagunçada, pois, não havia uma ordem de qual Thread executaria ou não, então ficou à mercê da JVM e do Monitor decidir qual executar e qual esperar.
