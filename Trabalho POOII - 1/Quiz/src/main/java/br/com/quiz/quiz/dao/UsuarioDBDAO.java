@@ -113,17 +113,32 @@ public class UsuarioDBDAO implements UsuarioDAO, IConst {
     public List<Usuario> listaTodos() throws SQLException {
         String sql = "SELECT * FROM Usuario";
         List<Usuario> usuarios = new ArrayList<>();
+
         try (Connection con = ConexaoDB.getConexao(stringDeConexao, usuario, senha);
              PreparedStatement stmt = con.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
-                Usuario u = new Usuario(
-                        rs.getInt("id_usuario"),
-                        rs.getString("username"),
-                        rs.getString("senha"),
-                        rs.getFloat("score")
-                );
-                usuarios.add(u);
+                String sql2 = "SELECT COALESCE(SUM(tempo_gasto), 0) AS total_score FROM RespostaUsuario WHERE id_usuario = ?";
+
+                try (PreparedStatement stmt2 = con.prepareStatement(sql2)) {
+                    stmt2.setInt(1, rs.getInt("id_usuario"));
+
+                    try (ResultSet rs2 = stmt2.executeQuery()) {
+                        double scoreTotal = 0.0;
+                        if (rs2.next()) {
+                            scoreTotal = rs2.getDouble("total_score");
+                        }
+
+                        Usuario u = new Usuario(
+                                rs.getInt("id_usuario"),
+                                rs.getString("username"),
+                                rs.getString("senha"),
+                                (float) scoreTotal
+                        );
+                        usuarios.add(u);
+                    }
+                }
             }
         }
         return usuarios;

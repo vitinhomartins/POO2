@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
@@ -12,54 +13,65 @@ import java.io.IOException;
 
 public class MenuController {
 
-    // Metodo 1: Inicia o Quiz (Troca a cena no Stage principal)
     @FXML
     private void iniciarQuiz(ActionEvent event) {
         try {
-            // Carrega o FXML do Quiz
-            Parent quizParent = FXMLLoader.load(getClass().getResource("/com/example/quiz/TelaQuiz.fxml"));
+            Parent quizParent = FXMLLoader.load(getClass().getResource("/br/com/quiz/quiz/TelaQuiz.fxml"));
             Scene quizScene = new Scene(quizParent);
-
-            // Obtém o Stage (Janela) atual
             Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-            // Define a nova cena (troca a tela)
             window.setScene(quizScene);
             window.setTitle("POO Gênio Quiz - O Jogo");
             window.show();
-
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar a tela do Quiz.");
         }
     }
 
-    // Metodo 2: Abre o Ranking (Janela modal)
     @FXML
     private void abrirRanking(ActionEvent event) {
-        abrirJanelaAuxiliar("/com/example/quiz/TelaRanking.fxml", "Ranking de Melhores Tempos");
-    }
-
-    // Metodo 3: Abre os Créditos (Janela modal)
-    @FXML
-    private void abrirCreditos(ActionEvent event) {
-        abrirJanelaAuxiliar("/com/example/quiz/TelaCreditos.fxml", "Créditos do Projeto");
-    }
-
-    // Metodo auxiliar
-    private void abrirJanelaAuxiliar(String fxmlPath, String title) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage newStage = new Stage();
-            newStage.setTitle(title);
-            newStage.setScene(new Scene(root));
-
-            // Torna a janela modal
-            newStage.initModality(Modality.APPLICATION_MODAL);
-            newStage.show();
+            Parent rankingParent = FXMLLoader.load(getClass().getResource("/br/com/quiz/quiz/TelaRanking.fxml"));
+            Scene rankingScene = new Scene(rankingParent);
+            Stage window = new Stage();
+            window.setScene(rankingScene);
+            window.setTitle("Ranking de Melhores Tempos");
+            window.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar FXML: " + fxmlPath);
+        }
+    }
+    @FXML
+    private void abrirCreditos(ActionEvent event) {
+        try {
+            System.out.println("Tentando carregar TelaCreditos.fxml");
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/br/com/quiz/quiz/TelaCreditos.fxml"));
+
+            CreditosController controller = new CreditosController();
+            loader.setController(controller);
+
+
+            AnchorPane root = new AnchorPane();
+            loader.setRoot(root);
+
+            loader.load();
+
+            System.out.println("FXML carregado com sucesso");
+
+
+            Scene creditosScene = new Scene(root);
+            Stage window = new Stage();
+            window.setScene(creditosScene);
+            window.setTitle("Créditos do Projeto");
+            window.show();
+
+            System.out.println("Janela de créditos aberta");
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar TelaCreditos.fxml: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Erro geral: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

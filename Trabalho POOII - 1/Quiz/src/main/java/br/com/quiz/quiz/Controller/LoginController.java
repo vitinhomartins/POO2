@@ -38,8 +38,10 @@ public class LoginController {
         }
 
         try {
-            Usuario usuarioLogado = ((UsuarioDBDAO) usuarioDAO).login(username, password); // Usando método login do DBDAO
-            if (usuarioLogado != null) {
+            Usuario usuario = usuarioDAO.buscaPorUsername(username);
+
+            if (usuario != null && usuario.getPassword().equals(password)) {
+                SessionManager.setUsuarioLogado(usuario);
                 Parent root = FXMLLoader.load(getClass().getResource("/br/com/quiz/quiz/TelaMenu.fxml"));
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 Scene scene = new Scene(root);
@@ -49,8 +51,10 @@ public class LoginController {
             } else {
                 lblFeedback.setText("Usuário ou senha inválidos.");
             }
+
         } catch (Exception e) {
-            lblFeedback.setText("Erro ao fazer login.");
+            lblFeedback.setText("Erro ao fazer login: " + e.getMessage());
+            lblFeedback.setStyle("-fx-text-fill: red;");
             e.printStackTrace();
         }
     }
@@ -65,8 +69,8 @@ public class LoginController {
             cadastroStage.initModality(Modality.APPLICATION_MODAL);
             cadastroStage.show();
         } catch (IOException e) {
+            lblFeedback.setText("Erro ao carregar a tela de Cadastro.");
             e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de Cadastro.");
         }
     }
 }

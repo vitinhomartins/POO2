@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class ConexaoDB implements IConst {
     public static Connection getConexao(String stringDeConexao, String usuario, String senha) {
         try {
-            return DriverManager.getConnection(stringDeConexao, usuario, senha);
+            return DriverManager.getConnection(IConst.stringDeConexao, IConst.usuario, IConst.senha);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

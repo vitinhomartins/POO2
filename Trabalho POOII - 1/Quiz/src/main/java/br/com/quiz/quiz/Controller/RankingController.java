@@ -22,7 +22,8 @@ public class RankingController {
     private void carregarRanking() {
         try {
             List<Usuario> ranking = usuarioDAO.listaTodos();
-            ranking.sort(Comparator.comparingDouble(Usuario::getScore_time).reversed()); // Maior score primeiro
+            System.out.println(ranking);
+            ranking.sort(Comparator.comparingDouble(Usuario::getScore_time).reversed());
             int row = 1;
             for (Usuario usuario : ranking) {
                 gridRanking.add(new Label(String.valueOf(row)), 0, row);

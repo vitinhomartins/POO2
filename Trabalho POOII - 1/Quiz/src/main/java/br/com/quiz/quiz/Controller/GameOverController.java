@@ -11,7 +11,6 @@ import java.io.IOException;
 
 public class GameOverController {
 
-    // Ação do botão: Retorna para o Menu Principal
     @FXML
     public void voltarParaInicio(ActionEvent event) {
         try {

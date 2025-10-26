@@ -72,7 +72,8 @@ public class PerguntaDBDAO implements PerguntaDAO, IConst {
                             rs.getInt("id_pergunta"),
                             rs.getString("texto_pergunta"),
                             rs.getInt("numero_questao"),
-                            alternativas
+                            alternativas,
+                            rs.getString("resposta_correta")
                     );
                     return p;
                 }
@@ -98,7 +99,8 @@ public class PerguntaDBDAO implements PerguntaDAO, IConst {
                         rs.getInt("id_pergunta"),
                         rs.getString("texto_pergunta"),
                         rs.getInt("numero_questao"),
-                        alternativas
+                        alternativas,
+                        rs.getString("resposta_correta")
                 );
                 perguntas.add(p);
             }

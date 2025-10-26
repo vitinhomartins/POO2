@@ -1,4 +1,4 @@
-package br.com.quiz.quiz.model;
+package br.com.quiz.quiz.dao;
 
 import java.sql.Timestamp;
 
@@ -20,10 +20,8 @@ public class RespostaUsuario {
         this.respostaEscolhida = respostaEscolhida;
         this.correta = correta;
         this.tempoGasto = tempoGasto;
-        // dataResposta pode ser setada automaticamente no DAO se necessário
     }
 
-    // Getters e Setters
     public int getIdResposta() {
         return idResposta;
     }

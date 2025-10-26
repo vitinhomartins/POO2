@@ -2,8 +2,11 @@ module br.com.quiz.quiz {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
+    requires org.postgresql.jdbc;
 
+    opens br.com.quiz.quiz to javafx.fxml;  // Já deve ter isso para o HelloApplication
+    exports br.com.quiz.quiz;  // Já deve ter isso
 
-    opens br.com.quiz.quiz to javafx.fxml;
-    exports br.com.quiz.quiz;
+    // Adicione esta linha:
+    opens br.com.quiz.quiz.Controller to javafx.fxml;
 }

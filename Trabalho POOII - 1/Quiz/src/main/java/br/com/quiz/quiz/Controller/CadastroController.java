@@ -19,7 +19,6 @@ public class CadastroController {
     @FXML private PasswordField pfCadPassword;
     @FXML private PasswordField pfCadConfirmPassword;
     @FXML private Label lblFeedback;
-
     @FXML
     public void handleCadastre(ActionEvent event) {
         lblFeedback.setText("");
@@ -38,14 +37,18 @@ public class CadastroController {
         }
 
         try {
-            Usuario novoUsuario = new Usuario(0, username, password, 0.0f); // ID será gerado pelo DB
+            // Cria o objeto Usuario e insere no DB
+            Usuario novoUsuario = new Usuario(-1, username, password, 0);
             usuarioDAO.insere(novoUsuario);
+            // Sucesso
             lblFeedback.setText("Conta criada com sucesso!");
             lblFeedback.setStyle("-fx-text-fill: green;");
 
+            // Limpa os campos
             txtCadUsername.clear();
             pfCadPassword.clear();
             pfCadConfirmPassword.clear();
+
 
             new Thread(() -> {
                 try {
@@ -57,8 +60,10 @@ public class CadastroController {
                     ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
                 });
             }).start();
+
         } catch (Exception e) {
-            lblFeedback.setText("Erro: Nome de usuário indisponível ou falha no cadastro.");
+            // Erro (ex.: DB não conectado)
+            lblFeedback.setText("Erro ao criar conta: " + e.getMessage());
             lblFeedback.setStyle("-fx-text-fill: red;");
             e.printStackTrace();
         }

@@ -5,11 +5,18 @@ public class Pergunta {
     private String textoPergunta;
     private int numeroQuestao;
     private String[] alternativas;
-    public Pergunta(int perguntaId, String textoPergunta, int numeroQuestao, String[] alternativas) {
+    private String correta;
+
+    public String getCorreta() {
+        return correta;
+    }
+
+    public Pergunta(int perguntaId, String textoPergunta, int numeroQuestao, String[] alternativas, String correta) {
         this.perguntaId = perguntaId;
         this.textoPergunta = textoPergunta;
         this.numeroQuestao = numeroQuestao;
         this.alternativas = alternativas;
+        this.correta = correta;
     }
 
     public int getPerguntaId() {

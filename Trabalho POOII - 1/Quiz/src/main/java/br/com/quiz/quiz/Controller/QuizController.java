@@ -1,5 +1,7 @@
 package br.com.quiz.quiz.Controller;
 
+import br.com.quiz.quiz.dao.RespostaUsuarioDBDAO;
+import br.com.quiz.quiz.model.RespostaUsuario;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -19,6 +21,7 @@ import br.com.quiz.quiz.dao.PerguntaDBDAO;
 import br.com.quiz.quiz.model.Pergunta;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class QuizController {
@@ -27,7 +30,7 @@ public class QuizController {
     private List<Pergunta> perguntas;
     private int perguntaAtual = 0;
     private Timeline cronometro;
-    private double tempoRestante = 60.0; // 60 segundos por pergunta, ajuste conforme necessário
+    private double tempoRestante = 60.0;
 
     @FXML private Label lblTemporizador;
     @FXML private Label lblNumeroPergunta;
@@ -55,16 +58,20 @@ public class QuizController {
     }
 
     @FXML
-    public void handleResponder(ActionEvent event) {
+    public void handleResponder(ActionEvent event) throws SQLException {
         Button sourceButton = (Button) event.getSource();
-        char respostaEscolhida = sourceButton.getText().charAt(0); // Assume A, B, C, D
+        char respostaEscolhida = sourceButton.getText().charAt(0);
         cronometro.stop();
 
-        boolean correta = validarResposta(perguntas.get(perguntaAtual), respostaEscolhida);
+        boolean correta = validarResposta(perguntas.get(perguntaAtual), String.valueOf(respostaEscolhida));
 
         if (correta) {
             lblFeedbackQuiz.setText("Correto!");
             lblFeedbackQuiz.setStyle("-fx-text-fill: green;");
+            double tempoResposta = 60.0 - tempoRestante;
+            RespostaUsuario respostaAtual = new RespostaUsuario(SessionManager.getUsuarioLogado().getId(), perguntas.get(perguntaAtual).getPerguntaId(), respostaEscolhida, true, tempoResposta);
+            RespostaUsuarioDBDAO resposta = new RespostaUsuarioDBDAO();
+            resposta.insere(respostaAtual);
             perguntaAtual++;
             if (perguntaAtual < perguntas.size()) {
                 new Thread(() -> {
@@ -106,17 +113,15 @@ public class QuizController {
                 cronometro.stop();
                 lblFeedbackQuiz.setText("Tempo esgotado! Fim de jogo.");
                 lblFeedbackQuiz.setStyle("-fx-text-fill: red;");
-                abrirTelaGameOver(null); // Chamada sem event, pois é automática
+                abrirTelaGameOver(null);
             }
         }));
         cronometro.setCycleCount(Timeline.INDEFINITE);
         cronometro.play();
     }
 
-    private boolean validarResposta(Pergunta p, char resposta) {
-        // Adicione campo resposta_correta ao modelo Pergunta e DB para validação real
-        // Por enquanto, simule (ex.: resposta 'A' é correta para todas)
-        return resposta == 'A'; // Ajuste conforme DB
+    private boolean validarResposta(Pergunta p, String resposta) {
+        return p.getCorreta().equals(resposta);
     }
 
     @FXML

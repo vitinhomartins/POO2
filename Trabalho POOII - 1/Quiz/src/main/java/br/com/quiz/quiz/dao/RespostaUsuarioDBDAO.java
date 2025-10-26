@@ -15,7 +15,7 @@ import br.com.quiz.quiz.model.RespostaUsuario;
 public class RespostaUsuarioDBDAO implements RespostaUsuarioDAO, IConst {
 
     public void insere(RespostaUsuario resposta) throws SQLException {
-        String sql = "INSERT INTO RespostaUsuario (id_usuario, id_pergunta, resposta_escolhida, correta, data_resposta) VALUES (?, ?, ?, ?, ?) RETURNING id_resposta";
+        String sql = "INSERT INTO RespostaUsuario (id_usuario, id_pergunta, resposta_escolhida, correta, data_resposta, tempo_gasto) VALUES (?, ?, ?, ?, ?, ?) RETURNING id_resposta";
         try (Connection con = ConexaoDB.getConexao(stringDeConexao, usuario, senha);
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, resposta.getIdUsuario());
@@ -23,6 +23,7 @@ public class RespostaUsuarioDBDAO implements RespostaUsuarioDAO, IConst {
             stmt.setString(3, String.valueOf(resposta.getRespostaEscolhida()));
             stmt.setBoolean(4, resposta.isCorreta());
             stmt.setTimestamp(5, resposta.getDataResposta() != null ? resposta.getDataResposta() : new Timestamp(System.currentTimeMillis()));
+            stmt.setDouble(6, resposta.getTempoGasto());
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     resposta.setIdResposta(rs.getInt("id_resposta"));
@@ -46,6 +47,7 @@ public class RespostaUsuarioDBDAO implements RespostaUsuarioDAO, IConst {
                     r.setRespostaEscolhida(rs.getString("resposta_escolhida").charAt(0));
                     r.setCorreta(rs.getBoolean("correta"));
                     r.setDataResposta(rs.getTimestamp("data_resposta"));
+                    r.setTempoGasto(rs.getDouble("tempo_gasto"));
                     respostas.add(r);
                 }
             }
@@ -65,5 +67,19 @@ public class RespostaUsuarioDBDAO implements RespostaUsuarioDAO, IConst {
             }
         }
         return 0;
+    }
+
+    public double calculaTempoTotal(int idUsuario) throws SQLException {
+        String sql = "SELECT SUM(tempo_gasto) AS tempo_total FROM RespostaUsuario WHERE id_usuario = ? AND correta = true";
+        try (Connection con = ConexaoDB.getConexao(stringDeConexao, usuario, senha);
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, idUsuario);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("tempo_total");
+                }
+            }
+        }
+        return 0.0;
     }
 }
